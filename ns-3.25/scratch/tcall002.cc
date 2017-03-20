@@ -50,6 +50,8 @@ using namespace ns3;
 double packetsRecieved1 = 0, packetsRecieved2 = 0, packetsRecieved3 = 0, packetsRecieved4 = 0, totalPacketsRecieved = 0;
 double packetsSent1 = 0, packetsSent2 = 0, packetsSent3 = 0, packetsSent4 = 0, totalPacketsSent = 0;
 
+// trace sink call back functions to count number of sent and recieved packets. Used to measure network performance
+
 void serverRxRecieved(std::string context, Ptr<const Packet> p){
      char recievedFromNode = context.at(context.length() - 24);
      //std::cout << "Packet Recieved from " << recievedFromNode << " at " << Simulator::Now().GetSeconds() << " Seconds" << std::endl;
@@ -192,6 +194,7 @@ int main (int argc, char *argv[])
   NetDeviceContainer staDevices;
   uint32_t i;
   NetDeviceContainer tmp;
+  // set Backoff Default for the type of node being created
   for(i = 0; i < wifiStaNodes.GetN(); i++){
      if (i < nWifi){
        //setup Regular MSs
@@ -233,6 +236,8 @@ int main (int argc, char *argv[])
   // AP is between the two stations, each station being located at 5 meters from the AP.
   // The distance between the two stations is thus equal to 10 meters.
   // Since the wireless range is limited to 5 meters, the two stations are hidden from each other.
+  //
+  // set locations of MS Nodes
   if (numMS == 1){
      positionAlloc->Add (Vector (5.0, 10.0, 0.0)); //n1
   }
@@ -258,7 +263,7 @@ int main (int argc, char *argv[])
 
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
   mobility.Install (wifiStaNodes);
-
+  // set location of AP Node
   Ptr<ListPositionAllocator> apPositionAlloc = CreateObject<ListPositionAllocator> ();
   apPositionAlloc->Add (Vector (5.0, 5.0, 0.0)); // AP Node Position
   mobility.SetPositionAllocator(apPositionAlloc);
@@ -291,7 +296,7 @@ int main (int argc, char *argv[])
 
   ApplicationContainer serverApps1, serverApps2, serverApps3, serverApps4, clientApps1, clientApps2, clientApps3, clientApps4;
 
-
+  // install applications on the correct nodes
   if (numMS == 1){  //n1
      serverApps1 = echoserver1.Install(wifiApNode);
 
@@ -421,7 +426,6 @@ int main (int argc, char *argv[])
    std::cout << "Total MS's must be between 1 and 4" << std::endl;
   }
 
-  //phy.EnablePcapAll ("Final", true);
   
   // log attributes
   Config::SetDefault ("ns3::ConfigStore::Filename", StringValue ("output-attributes.txt"));
@@ -435,7 +439,7 @@ int main (int argc, char *argv[])
   outputConfig2.ConfigureDefaults ();
 
   outputConfig2.ConfigureAttributes ();  
-
+  // connect Trace Sources To trace sink callback functions
   Config::Connect("/NodeList/*/ApplicationList/*/$ns3::UdpEchoServer/Rx", MakeCallback(&serverRxRecieved));
   Config::Connect("/NodeList/*/ApplicationList/*/$ns3::UdpEchoClient/Tx", MakeCallback(&clientTxSent));
 
@@ -451,8 +455,11 @@ int main (int argc, char *argv[])
   //std::cout << "Throughput: " << throughput << " Mbit/s" << '\n';
   
   //printAddresses(StaInterface,"IPs of MS's");
+  //
+  //functions to print locations of nodes on x,y coordinate plane
   printLocations(wifiStaNodes,"Location of all wifi Devices");
   printLocations(wifiApNode,"Location of AP");
+  // calculate percentage of lost packets and throughput of network
   double percentLost = (totalPacketsSent-totalPacketsRecieved)/totalPacketsSent;
   double throughput1 = (packetsRecieved1 * payloadSize * 8)/(simulationTime * 1000000);
   double throughput2 = (packetsRecieved2 * payloadSize * 8)/(simulationTime * 1000000);
