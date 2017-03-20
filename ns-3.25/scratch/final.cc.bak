@@ -1,0 +1,372 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation;
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/applications-module.h"
+#include "ns3/wifi-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/csma-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/ipv4-global-routing-helper.h"
+#include "ns3/propagation-loss-model.h"
+
+
+// Default Network Topology old
+//
+// Number of wifi or csma nodes can be increased up to 250
+//                          |
+//                 Rank 0   |   Rank 1
+// -------------------------|----------------------------
+//   Wifi 10.1.3.0
+//                 AP
+//  *    *    *    *
+//  |    |    |    |    10.1.1.0
+// n5   n6   n7   n0 -------------- n1   n2   n3   n4
+//                   point-to-point  |    |    |    |
+//                                   ================
+//                                     LAN 10.1.2.0
+
+
+// Default Network Topology
+// //
+// // Number of wifi or csma nodes can be increased up to 250
+// //                          |
+// //                 Rank 0   |   Rank 1
+// // -------------------------|----------------------------
+// //   Wifi 10.1.3.0
+// //                    AP
+// //  *  *    *    *    *
+// //  |  |    |    |    |
+// // n1  n2   n3   n4   n0
+// //
+
+using namespace ns3;
+
+NS_LOG_COMPONENT_DEFINE ("Final");
+
+
+void printLocations(NodeContainer container, std::string title){
+     std::cout << title << std::endl;
+     for(NodeContainer::Iterator it = container.Begin(); it != container.End(); it++){
+        Ptr<Node> node = *it;
+        Ptr<MobilityModel> position = node->GetObject<MobilityModel> ();
+        NS_ASSERT (position != 0);
+        Vector pos = position->GetPosition ();
+        std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
+     }
+}
+
+void printAddresses(Ipv4InterfaceContainer container, std::string title){
+     std::cout << title << std::endl;
+     uint32_t nNodes = container.GetN ();
+     for (uint32_t i = 0; i < nNodes; ++i)
+     {
+         std::cout << container.GetAddress(i, 0) << std::endl;
+     }
+     std::cout << std::endl;
+}
+
+
+int main (int argc, char *argv[])
+{
+  bool verbose = true;
+  uint32_t nCsma = 0;
+  uint32_t nWifi = 1;
+  bool tracing = false;
+
+  CommandLine cmd;
+  cmd.AddValue ("nCsma", "Number of \"extra\" CSMA nodes/devices", nCsma);
+  cmd.AddValue ("nWifi", "Number of wifi STA devices", nWifi);
+  cmd.AddValue ("verbose", "Tell echo applications to log if true", verbose);
+  cmd.AddValue ("tracing", "Enable pcap tracing", tracing);
+
+  cmd.Parse (argc,argv);
+
+  // Check for valid number of csma or wifi nodes
+  // 250 should be enough, otherwise IP addresses 
+  // soon become an issue
+  if (nWifi > 250 || nCsma > 250)
+    {
+      std::cout << "Too many wifi or csma nodes, no more than 250 each." << std::endl;
+      return 1;
+    }
+
+  if (verbose)
+    {
+      LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
+      LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
+    }
+
+  //NodeContainer csmaNodes;
+  //csmaNodes.Add (p2pNodes.Get (0));
+  //csmaNodes.Create (nCsma);
+
+  //CsmaHelper csma;
+  //csma.SetChannelAttribute ("DataRate", StringValue ("100Mbps"));
+  //csma.SetChannelAttribute ("Delay", TimeValue (NanoSeconds (6560)));
+
+  //NetDeviceContainer csmaDevices;
+  //csmaDevices = csma.Install (csmaNodes);
+
+  NodeContainer wifiStaNodes;
+  wifiStaNodes.Create (nWifi);
+  NodeContainer wifiApNode;
+  wifiApNode.Create(1);
+
+  Config::SetDefault("ns3::RangePropagationLossModel::MaxRange", DoubleValue(5.0));
+  YansWifiChannelHelper channel;
+  channel.SetPropagationDelay("ns3::ConstantSpeedPropagationDelayModel");
+  channel.AddPropagationLoss("ns3::RangePropagationLossModel");
+  YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
+  phy.SetChannel (channel.Create ());
+
+  WifiHelper wifi;
+  wifi.SetRemoteStationManager ("ns3::AarfWifiManager");
+
+  WifiMacHelper mac;
+  Ssid ssid = Ssid ("ns-3-ssid");
+  mac.SetType ("ns3::StaWifiMac",
+               "Ssid", SsidValue (ssid),
+               "ActiveProbing", BooleanValue (false));
+
+  NetDeviceContainer staDevices;
+  staDevices = wifi.Install (phy, mac, wifiStaNodes);
+
+  mac.SetType ("ns3::ApWifiMac",
+               "Ssid", SsidValue (ssid),
+	       "BeaconGeneration", BooleanValue(true),
+               "BeaconInterval", TimeValue(Seconds(5)));
+
+  NetDeviceContainer apDevices;
+  apDevices = wifi.Install (phy, mac, wifiApNode);
+
+  MobilityHelper mobility;
+  Ptr<ListPositionAllocator> positionAlloc = CreateObject<ListPositionAllocator> ();
+  if (nWifi == 1){
+     positionAlloc->Add (Vector (5.0, 10.0, 0.0)); //n1
+  }
+  else if (nWifi == 2){
+     positionAlloc->Add (Vector (5.0, 10.0, 0.0)); //n1
+     positionAlloc->Add (Vector (0.0, 5.0, 0.0)); //n2
+  }
+  else if (nWifi == 3){
+     positionAlloc->Add (Vector (5.0, 10.0, 0.0)); //n1
+     positionAlloc->Add (Vector (0.0, 5.0, 0.0)); //n2
+     positionAlloc->Add (Vector (5.0, 0.0, 0.0));  //n3
+  }
+  else if (nWifi == 4){
+     positionAlloc->Add (Vector (5.0, 10.0, 0.0)); //n1
+     positionAlloc->Add (Vector (0.0, 5.0, 0.0)); //n2
+     positionAlloc->Add (Vector (5.0, 0.0, 0.0));  //n3
+     positionAlloc->Add (Vector (10.0, 5.0, 0.0)); // n4
+  }
+  else{
+   std::cout << "nWifi must be between 1 and 4" << std::endl;
+  }
+
+  
+  mobility.SetPositionAllocator(positionAlloc);
+  mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+  mobility.Install (wifiStaNodes);
+  
+  Ptr<ListPositionAllocator> apPositionAlloc = CreateObject<ListPositionAllocator> ();
+  apPositionAlloc->Add (Vector (5.0, 5.0, 0.0)); // AP Node Position
+  mobility.SetPositionAllocator(apPositionAlloc);
+  mobility.Install (wifiApNode);
+
+  InternetStackHelper stack;
+  stack.Install (wifiStaNodes);
+  stack.Install (wifiApNode);
+
+  Ipv4AddressHelper address;
+  Ipv4InterfaceContainer wifiDevices;
+  Ipv4InterfaceContainer apDevice;
+
+  /*address.SetBase ("10.1.2.0", "255.255.255.0");
+  Ipv4InterfaceContainer csmaInterfaces;
+  csmaInterfaces = address.Assign (csmaDevices);
+  */
+
+  address.SetBase ("10.1.1.0", "255.255.255.0");
+  wifiDevices = address.Assign(staDevices);
+  apDevice = address.Assign (apDevices);
+  
+  // set up servers on AP
+  if (nWifi == 1){
+     UdpEchoServerHelper echoserver1(9);  //n1
+     ApplicationContainer serverApps1 = echoserver1.Install(wifiApNode.Get(0));
+
+     serverApps1.Start(Seconds(0.0));
+     serverApps1.Stop(Seconds(10.0));
+     
+     UdpEchoClientHelper echoClient1(apDevice.GetAddress(0), 9);
+     echoClient1.SetAttribute ("MaxPackets", UintegerValue(1));
+     echoClient1.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient1.SetAttribute ("PacketSize", UintegerValue(1024));
+
+     ApplicationContainer clientApps1 = echoClient1.Install (wifiStaNodes.Get (0)); 
+    
+
+     serverApps1.Start(Seconds(0.0));
+     serverApps1.Stop(Seconds(10.0));
+    
+     clientApps1.Start (Seconds (0.0));
+     clientApps1.Stop (Seconds (10.0));
+  }
+  else if (nWifi == 2){
+     UdpEchoServerHelper echoserver1(9);  //n1
+     UdpEchoServerHelper echoserver2(10); //n2
+     ApplicationContainer serverApps1 = echoserver1.Install(wifiApNode.Get(0));
+     ApplicationContainer serverApps2 = echoserver2.Install(wifiApNode.Get(0));
+     
+     UdpEchoClientHelper echoClient1( apDevice.GetAddress(0), 9);
+     echoClient1.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient1.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient1.SetAttribute ("PacketSize", UintegerValue(1024));
+
+     UdpEchoClientHelper echoClient2(apDevice.GetAddress(0), 10);
+     echoClient2.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient2.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient2.SetAttribute ("PacketSize", UintegerValue(1024));
+
+     ApplicationContainer clientApps1 = echoClient1.Install (wifiStaNodes.Get (0));
+     ApplicationContainer clientApps2 = echoClient2.Install (wifiStaNodes.Get (1)); 
+     
+     serverApps1.Start(Seconds(0.0));
+     serverApps1.Stop(Seconds(10.0));
+     serverApps2.Start(Seconds(0.0));
+     serverApps2.Stop(Seconds(10.0));
+     clientApps1.Start (Seconds (0.0));
+     clientApps1.Stop (Seconds (10.0));
+     clientApps2.Start (Seconds (0.0));
+     clientApps2.Stop (Seconds (10.0)); 
+  }
+  else if (nWifi == 3){
+     UdpEchoServerHelper echoserver1(9);  //n1
+     UdpEchoServerHelper echoserver2(10); //n2
+     UdpEchoServerHelper echoserver3(11); //n3
+     ApplicationContainer serverApps1 = echoserver1.Install(wifiApNode.Get(0));
+     ApplicationContainer serverApps2 = echoserver2.Install(wifiApNode.Get(0));
+     ApplicationContainer serverApps3 = echoserver3.Install(wifiApNode.Get(0));
+     
+     UdpEchoClientHelper echoClient1(apDevice.GetAddress(0), 9);
+     echoClient1.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient1.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient1.SetAttribute ("PacketSize", UintegerValue(1024));
+
+     UdpEchoClientHelper echoClient2(apDevice.GetAddress(0), 10);
+     echoClient2.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient2.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient2.SetAttribute ("PacketSize", UintegerValue(1024));
+     
+     UdpEchoClientHelper echoClient3(apDevice.GetAddress(0), 11);
+     echoClient3.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient3.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient3.SetAttribute ("PacketSize", UintegerValue(1024));
+     
+     ApplicationContainer clientApps1 = echoClient1.Install (wifiStaNodes.Get (0));
+     ApplicationContainer clientApps2 = echoClient2.Install (wifiStaNodes.Get (1));
+     ApplicationContainer clientApps3 = echoClient3.Install (wifiStaNodes.Get (2));
+
+
+     serverApps1.Start(Seconds(0.0));
+     serverApps1.Stop(Seconds(10.0));
+     serverApps2.Start(Seconds(0.0));
+     serverApps2.Stop(Seconds(10.0));
+     serverApps3.Start(Seconds(0.0));
+     serverApps3.Stop(Seconds(10.0));
+     clientApps1.Start (Seconds (0.0));
+     clientApps1.Stop (Seconds (10.0));
+     clientApps2.Start (Seconds (0.0));
+     clientApps2.Stop (Seconds (10.0));
+     clientApps3.Start (Seconds (0.0));
+     clientApps3.Stop (Seconds (10.0));
+  }
+  else if (nWifi == 4){
+     UdpEchoServerHelper echoserver1(9);  //n1
+     UdpEchoServerHelper echoserver2(10); //n2
+     UdpEchoServerHelper echoserver3(11); //n3
+     UdpEchoServerHelper echoserver4(12); //n4
+     ApplicationContainer serverApps1 = echoserver1.Install(wifiApNode.Get(0));
+     ApplicationContainer serverApps2 = echoserver2.Install(wifiApNode.Get(0));
+     ApplicationContainer serverApps3 = echoserver3.Install(wifiApNode.Get(0));
+     ApplicationContainer serverApps4 = echoserver4.Install(wifiApNode.Get(0));
+     
+     UdpEchoClientHelper echoClient1(apDevice.GetAddress(0), 9);
+     echoClient1.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient1.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient1.SetAttribute ("PacketSize", UintegerValue(1024));
+     
+     UdpEchoClientHelper echoClient2(apDevice.GetAddress(0), 10);
+     echoClient2.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient2.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient2.SetAttribute ("PacketSize", UintegerValue(1024));
+
+     UdpEchoClientHelper echoClient3(apDevice.GetAddress(0), 11);
+     echoClient3.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient3.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient3.SetAttribute ("PacketSize", UintegerValue(1024));
+
+     UdpEchoClientHelper echoClient4(apDevice.GetAddress(0), 12);
+     echoClient4.SetAttribute ("MaxPackets", UintegerValue(10));
+     echoClient4.SetAttribute ("Interval", TimeValue(Seconds (1.0)));
+     echoClient4.SetAttribute ("PacketSize", UintegerValue(1024));
+
+     ApplicationContainer clientApps1 = echoClient1.Install (wifiStaNodes.Get (0));
+     ApplicationContainer clientApps2 = echoClient2.Install (wifiStaNodes.Get (1));
+     ApplicationContainer clientApps3 = echoClient3.Install (wifiStaNodes.Get (2));
+     ApplicationContainer clientApps4 = echoClient4.Install (wifiStaNodes.Get (3));
+
+     serverApps1.Start(Seconds(0.0));
+     serverApps1.Stop(Seconds(10.0));
+     serverApps2.Start(Seconds(0.0));
+     serverApps2.Stop(Seconds(10.0));
+     serverApps3.Start(Seconds(0.0));
+     serverApps3.Stop(Seconds(10.0));
+     serverApps4.Start(Seconds(0.0));
+     serverApps4.Stop(Seconds(10.0));
+     
+     clientApps1.Start (Seconds (0.0));
+     clientApps1.Stop (Seconds (10.0));
+     clientApps2.Start (Seconds (0.0));
+     clientApps2.Stop (Seconds (10.0));
+     clientApps3.Start (Seconds (0.0));
+     clientApps3.Stop (Seconds (10.0));
+     clientApps4.Start (Seconds (0.0));
+     clientApps4.Stop (Seconds (10.0));
+  }
+  else{
+   std::cout << "nWifi must be between 1 and 4" << std::endl;
+  }
+
+  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+
+  Simulator::Stop (Seconds (10.0));
+
+  if (tracing == true)
+    {
+      phy.EnablePcapAll ("Final", true);
+    }
+  
+  printAddresses(wifiDevices,"IPs of MS's");
+  printLocations(wifiStaNodes,"Location of all wifi Devices");
+  printLocations(wifiApNode,"Location of AP");
+  
+  Simulator::Run ();
+  Simulator::Destroy ();
+  return 0;
+}

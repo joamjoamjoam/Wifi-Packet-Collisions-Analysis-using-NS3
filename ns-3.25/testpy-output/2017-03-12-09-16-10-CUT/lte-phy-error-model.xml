@@ -1,0 +1,15 @@
+<Test>
+  <Name>lte-phy-error-model</Name>
+  <Result>PASS</Result>
+  <Time real="8.780" user="5.290" system="0.010"/>
+  <Test>
+    <Name>DlCtrlPhyErrorModel 2 eNBs, distance 1078 m, RngRun 1</Name>
+    <Result>PASS</Result>
+    <Time real="4.910" user="1.650" system="0.010"/>
+  </Test>
+  <Test>
+    <Name>DataPhyErrorModel 4 UEs, distance 1800 m, RngRun 1</Name>
+    <Result>PASS</Result>
+    <Time real="3.870" user="3.640" system="0.000"/>
+  </Test>
+</Test>

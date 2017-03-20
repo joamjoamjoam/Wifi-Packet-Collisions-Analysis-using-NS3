@@ -1,0 +1,15 @@
+<Test>
+  <Name>wimax-phy-layer</Name>
+  <Result>PASS</Result>
+  <Time real="0.970" user="0.970" system="0.000"/>
+  <Test>
+    <Name>Test the SNR to block error rate module</Name>
+    <Result>PASS</Result>
+    <Time real="0.010" user="0.010" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Test the Phy model with different frame durations</Name>
+    <Result>PASS</Result>
+    <Time real="0.960" user="0.960" system="0.000"/>
+  </Test>
+</Test>

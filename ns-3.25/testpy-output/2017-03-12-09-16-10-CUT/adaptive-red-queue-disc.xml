@@ -1,0 +1,15 @@
+<Test>
+  <Name>adaptive-red-queue-disc</Name>
+  <Result>PASS</Result>
+  <Time real="13.230" user="12.380" system="0.030"/>
+  <Test>
+    <Name>Sanity check on automatically set parameters of ARED</Name>
+    <Result>PASS</Result>
+    <Time real="0.050" user="0.050" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Sanity check on adaptive parameter of ARED</Name>
+    <Result>PASS</Result>
+    <Time real="13.180" user="12.330" system="0.030"/>
+  </Test>
+</Test>

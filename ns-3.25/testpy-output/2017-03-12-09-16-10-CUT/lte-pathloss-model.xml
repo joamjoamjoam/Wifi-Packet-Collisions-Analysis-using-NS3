@@ -1,0 +1,20 @@
+<Test>
+  <Name>lte-pathloss-model</Name>
+  <Result>PASS</Result>
+  <Time real="0.090" user="0.090" system="0.000"/>
+  <Test>
+    <Name> snr= 47.4054 dB,  mcs= -1</Name>
+    <Result>PASS</Result>
+    <Time real="0.050" user="0.050" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> snr= -5.61073 dB,  mcs= -1</Name>
+    <Result>PASS</Result>
+    <Time real="0.020" user="0.030" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> snr= -15.7921 dB,  mcs= -1</Name>
+    <Result>PASS</Result>
+    <Time real="0.020" user="0.010" system="0.000"/>
+  </Test>
+</Test>

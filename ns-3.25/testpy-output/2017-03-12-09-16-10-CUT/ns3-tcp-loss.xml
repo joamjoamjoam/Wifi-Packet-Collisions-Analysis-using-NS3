@@ -1,0 +1,80 @@
+<Test>
+  <Name>ns3-tcp-loss</Name>
+  <Result>PASS</Result>
+  <Time real="3.660" user="3.170" system="0.020"/>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.220" user="0.210" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.180" user="0.190" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.190" user="0.180" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.200" user="0.200" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.220" user="0.220" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.330" user="0.180" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.230" user="0.200" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.360" user="0.220" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.300" user="0.220" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.230" user="0.220" system="0.010"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.230" user="0.230" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.230" user="0.230" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.230" user="0.220" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.220" user="0.230" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Check the behaviour of TCP upon packet losses</Name>
+    <Result>PASS</Result>
+    <Time real="0.230" user="0.220" system="0.000"/>
+  </Test>
+</Test>

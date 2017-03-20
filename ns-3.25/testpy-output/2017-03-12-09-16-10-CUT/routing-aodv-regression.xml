@@ -1,0 +1,25 @@
+<Test>
+  <Name>routing-aodv-regression</Name>
+  <Result>PASS</Result>
+  <Time real="0.950" user="0.860" system="0.020"/>
+  <Test>
+    <Name>AODV chain regression test</Name>
+    <Result>PASS</Result>
+    <Time real="0.150" user="0.120" system="0.010"/>
+  </Test>
+  <Test>
+    <Name>AODV chain regression test</Name>
+    <Result>PASS</Result>
+    <Time real="0.070" user="0.050" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Bug 772 UDP and TCP chain regression test</Name>
+    <Result>PASS</Result>
+    <Time real="0.240" user="0.230" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Bug 772 UDP and TCP chain regression test</Name>
+    <Result>PASS</Result>
+    <Time real="0.490" user="0.460" system="0.010"/>
+  </Test>
+</Test>

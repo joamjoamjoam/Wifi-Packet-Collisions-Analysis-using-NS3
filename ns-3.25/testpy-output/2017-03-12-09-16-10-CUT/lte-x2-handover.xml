@@ -1,0 +1,45 @@
+<Test>
+  <Name>lte-x2-handover</Name>
+  <Result>PASS</Result>
+  <Time real="20.680" user="19.200" system="0.010"/>
+  <Test>
+    <Name> nUes=2 nDedicatedBearers=2 udp=1 ns3::RrFfMacScheduler admitHo=1 hoList: 1 fwd &amp; bwd &amp; fwd, ideal RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.400" user="2.370" system="0.010"/>
+  </Test>
+  <Test>
+    <Name> nUes=3 nDedicatedBearers=2 udp=1 ns3::RrFfMacScheduler admitHo=1 hoList: 1+2 fwd &amp; bwd, ideal RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.610" user="2.430" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> nUes=2 nDedicatedBearers=2 udp=1 ns3::RrFfMacScheduler admitHo=1 hoList: 1 fwd &amp; bwd &amp; fwd, real RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.840" user="2.400" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> nUes=3 nDedicatedBearers=2 udp=1 ns3::RrFfMacScheduler admitHo=1 hoList: 1+2 fwd &amp; bwd, real RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.370" user="2.280" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> nUes=2 nDedicatedBearers=2 udp=1 ns3::PfFfMacScheduler admitHo=1 hoList: 1 fwd &amp; bwd &amp; fwd, ideal RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.900" user="2.340" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> nUes=3 nDedicatedBearers=2 udp=1 ns3::PfFfMacScheduler admitHo=1 hoList: 1+2 fwd &amp; bwd, ideal RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.040" user="2.040" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> nUes=2 nDedicatedBearers=2 udp=1 ns3::PfFfMacScheduler admitHo=1 hoList: 1 fwd &amp; bwd &amp; fwd, real RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.820" user="2.640" system="0.000"/>
+  </Test>
+  <Test>
+    <Name> nUes=3 nDedicatedBearers=2 udp=1 ns3::PfFfMacScheduler admitHo=1 hoList: 1+2 fwd &amp; bwd, real RRC</Name>
+    <Result>PASS</Result>
+    <Time real="2.700" user="2.700" system="0.000"/>
+  </Test>
+</Test>

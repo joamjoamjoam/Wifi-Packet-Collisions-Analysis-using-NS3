@@ -1,0 +1,80 @@
+<Test>
+  <Name>lte-downlink-power-control</Name>
+  <Result>PASS</Result>
+  <Time real="8.230" user="7.570" system="0.000"/>
+  <Test>
+    <Name>Downlink Power Control: txpowdB30nrb6run1earfcn500_allRbPower</Name>
+    <Result>PASS</Result>
+    <Time real="0.000" user="0.000" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: txpowdB30nrb6run1earfcn500</Name>
+    <Result>PASS</Result>
+    <Time real="0.000" user="0.000" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: txpowdB30nrb25run1earfcn500_allRbPower</Name>
+    <Result>PASS</Result>
+    <Time real="0.000" user="0.000" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: txpowdB30nrb25run1earfcn500</Name>
+    <Result>PASS</Result>
+    <Time real="0.000" user="0.000" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_noChange</Name>
+    <Result>PASS</Result>
+    <Time real="0.620" user="0.630" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB_6</Name>
+    <Result>PASS</Result>
+    <Time real="0.610" user="0.600" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB_4dot77</Name>
+    <Result>PASS</Result>
+    <Time real="0.620" user="0.630" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB_3</Name>
+    <Result>PASS</Result>
+    <Time real="0.550" user="0.540" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB_1dot77</Name>
+    <Result>PASS</Result>
+    <Time real="0.960" user="0.660" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB0</Name>
+    <Result>PASS</Result>
+    <Time real="0.750" user="0.750" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB1</Name>
+    <Result>PASS</Result>
+    <Time real="0.790" user="0.750" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB2</Name>
+    <Result>PASS</Result>
+    <Time real="0.740" user="0.740" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: DataCtrlPowerDifference_dB3</Name>
+    <Result>PASS</Result>
+    <Time real="0.740" user="0.740" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: RrcConnReconf-IdealRrc</Name>
+    <Result>PASS</Result>
+    <Time real="0.730" user="0.730" system="0.000"/>
+  </Test>
+  <Test>
+    <Name>Downlink Power Control: RrcConnReconf-RealRrc</Name>
+    <Result>PASS</Result>
+    <Time real="1.120" user="0.800" system="0.000"/>
+  </Test>
+</Test>
