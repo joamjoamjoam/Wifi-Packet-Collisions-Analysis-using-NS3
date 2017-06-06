@@ -1,3 +1,9 @@
+Application using NS3 network simulator to show how different network topologies cause varying degress of network performance. This project
+uses NS3 to show how packet collisons are affected by changing parts of a Wifi network topology.
+
+
+
+
 This is ns-3-allinone.
 
 If you have downloaded this in tarball release format, this directory
